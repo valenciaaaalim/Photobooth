@@ -166,4 +166,10 @@ def camera_program():
 # if camera on, turn  it off then call start camera function
 
 
-                
+    cam = cv2.VideoCapture(0)
+    if cam.isOpened():
+        ret,frame = cam.read()
+    else:
+        ret = False
+    while ret:
+        cv2.imshow("camera")
