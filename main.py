@@ -19,6 +19,7 @@ def stop_camera(cam_on, cam):
     if cam_on and cam is not None:
         cam.release()
         cam_on = False
+        cv2.destroyAllWindows()
     print("Camera is now OFF")
     return cam_on, None
 
@@ -76,7 +77,7 @@ def main():
             break
         elif cv2.waitKey(1) == ord('q'):
             break
-    cv2.destroyAllWindows()
+    stop_camera(cam_on, cam)
 
 
 main()
