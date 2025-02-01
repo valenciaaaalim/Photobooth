@@ -4,20 +4,44 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
 
-def start_camera(cam_on):
+def start_camera(cam_on, cam):
     cam = cv2.VideoCapture(0)
-    if not cam.isOpened():
+    if cam.isOpened():
+      cam_on = True
+      print("Camera is now ON")
+      return cam_on, cam
+    elif not cam.isOpened():
+        cam_on = False
         print("Error: Unable to access the camera.")
         return False, None
     
-    print("Camera is now ON")
-    return True, cam
 
 def stop_camera(cam_on, cam):
-    cam.release()
+    if cam_on and cam is not None:
+        cam.release()
+        cam_on = False
     print("Camera is now OFF")
-    return False, None
+    return cam_on, None
 
+
+def capture_image(cam_on, cam):
+    cam_on, cam = start_camera(cam_on, cam)
+    ret, frame = cam.read()
+    if not ret:
+        print("Error: Unable to capture image.")
+        return
+    elif ret:
+        cv2.imshow("Preview", frame)
+        print("waitKey not yet responded")
+        cv2.waitKey(0)
+        cv2.destroyWindow("Preview")
+        cv2.waitKey(1)
+        print("destroyWindow")
+        cam_on = False
+        # waiting for any keypress, then will close window
+        os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
+        return cam_on, frame
+    
 def get_next_filename():
     # Start numbering from 1 and keep checking the filenames
     i = 1
@@ -25,14 +49,41 @@ def get_next_filename():
         i += 1
     return f"img_{i}.jpg"  # Return the next available filename
 
-def capture_image(cam):
-    ret, frame = cam.read()
-    if not ret:
-        print("Error: Unable to capture image.")
-        return
+def accept_image(frame):
+    print("Press 'y' to save or 'n' to discard the image.")
+    while True:
+      user_input = input("Save the image? (y/n): ").strip().lower()
+      if user_input == 'y':  # 'y' for yes to save
+          img_path = get_next_filename()
+          cv2.imwrite(img_path, frame)
+          print(f"Image saved to {img_path}")
+          break
+      elif user_input == 'n':  # 'n'y for no to discard
+          print("Image discarded.")
+          break
+      else:
+          print("Invalid input. Please press 'y' to save or 'n' to discard.")
     
 
-def accept_image()
+
+def main():
+    cam_on, cam = False, None
+    print("Press 'c' to capture an image")
+    while True:
+        command = input("Enter a command: ").strip().lower()
+        if command == 'c':
+          cam_on, frame = capture_image(cam_on, cam)
+          accept_image(frame)
+        else:
+            print("Invalid command, only 'c' or quit program, with ctrl+c")
+        if cam_on and cam is not None:
+          cam.release()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
+
+
+main()
+    
 
 def camera_program():
     cam_on = False  # Camera starts off
@@ -111,6 +162,8 @@ def camera_program():
 
 
 
-camera_program()
+#check if camera on
+# if camera on, turn  it off then call start camera function
+
 
                 
