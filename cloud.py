@@ -66,13 +66,13 @@ def generate_qr_code(link, output_path="qrcode.png"):
     cv2.destroyAllWindows()
 
 # Main function
-def main(img_path):
-    parent_drive_folder_id = '1Zn71pK3S_0ATuvqotUU8wvhs8FDuALph'
+def upload_original(img_path, img_id):
+    parent_drive_folder_id = os.getenv("DRIVE_PARENT_FOLDER")
     drive = authenticate_google_drive()
-    folder_number = img_path.split('_')[1].split('.')[0]  # Extract number from filename (e.g., "1" from "img_1.jpg")
-    # image_files = sorted([f for f in os.listdir(image_folder) if f.startswith("img_") and f.endswith(".jpg")])
+    # folder_number = img_path.split('_')[1].split('.')[0]  # Extract number from filename (e.g., "1" from "img_1.jpg")
+    # # image_files = sorted([f for f in os.listdir(image_folder) if f.startswith("img_") and f.endswith(".jpg")])
         
-    folder_name = f"DAI_{folder_number}"  # Google Drive folder name
+    folder_name = f"DAI_{img_id}"  # Google Drive folder name
 
     # Create Google Drive folder
     folder_id = create_drive_folder(drive, folder_name, parent_drive_folder_id)
@@ -82,9 +82,15 @@ def main(img_path):
     upload_file_to_drive(drive, img_path, folder_id)
 
     # Get shareable link & generate QR code
-    shareable_link = get_shareable_link(drive, folder_id)
-    generate_qr_code(shareable_link)
+    drive_link = get_shareable_link(drive, folder_id)
+    generate_qr_code(drive_link)
 
-    print(f"Folder {folder_name} created. QR Code generated! Shareable link: {shareable_link}")
+    print(f"Folder {folder_name} created. QR Code generated! Shareable link: {drive_link}")
+
+    return drive_link, folder_id
 
 
+def upload_renaissance(img_path, folder_id):
+    drive = authenticate_google_drive()
+    upload_file_to_drive(drive, img_path, folder_id)
+    

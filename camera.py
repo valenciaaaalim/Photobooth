@@ -72,14 +72,16 @@ def get_next_filename():
     i = 1
     while os.path.exists(os.path.join("saved_img", f"img_{i}.jpg")):
         i += 1
-    return os.path.join("saved_img",f"img_{i}.jpg")  # Return the next available filename
+    img_id = i
+    return os.path.join("saved_img",f"img_{i}.jpg"), img_id  # Return the next available filename
 
 def accept_image(frame):
     print("Press 'y' to save or 'n' to discard the image.")
     while True:
       user_input = input("Save the image? (y/n): ").strip().lower()
       if user_input == 'y':  # 'y' for yes to save
-          img_path = get_next_filename()
+          img_path, img_id = get_next_filename()
+          print(img_path)
           cv2.imwrite(img_path, frame)
           send_to_clipboard(frame)
           print(f"Image saved to {img_path} and clipboard")
@@ -89,7 +91,7 @@ def accept_image(frame):
           break
       else:
           print("Invalid input. Please press 'y' to save or 'n' to discard.")
-    return img_path
+    return img_path, img_id
     
 def main():
     cam_on, cam = False, None
@@ -100,12 +102,12 @@ def main():
         cv2.imshow('Camera', frame)
         if cv2.waitKey(1) == ord('c'):
             cam_on, frame = capture_image(cam_on, cam)
-            img_path = accept_image(frame)
+            img_path, img_id = accept_image(frame)
             break
         elif cv2.waitKey(1) == ord('q'):
             break
     stop_camera(cam_on, cam)
-    return(img_path)
+    return(img_path, img_id)
 
 
 

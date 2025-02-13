@@ -2,9 +2,9 @@ import requests
 from dotenv import load_dotenv
 load_dotenv()
 import os 
-import time
+import json
 
-from test import shareable_link
+# from test import shareable_link
 
 webhook_url = os.getenv("NGROK_FORWARDING")
 account_hash = os.getenv("USERAPI_HASH")
@@ -35,7 +35,7 @@ def get_gender_input():
             print("Invalid input! Please enter 'm' or 'f'.")
 
 
-def post_request():
+def post_request(img_url,prompt):
     # Set the request URL
     imagine_url = "https://api.userapi.ai/midjourney/v2/imagine"
     
@@ -59,47 +59,51 @@ def post_request():
 
     # Check if the request was successful
     if response.status_code == 200:
-        response_data = response.json()
-        task_hash = response_data.get("hash")
-        print(f"Task hash: {task_hash}")
+        response_data = response.text
+        #task_hash = response_data.get("hash")
+        #print(f"Task hash: {task_hash}")
+        print('class type', type(response_data))
+        print('responsedata', response_data)
     else:
         print(f"Error: {response.text}")
 
+    return response
+
+def get_hash_after_post(response):
+    with open(response) as f:
+        data = json.load(f)
+    hash_id = data.get('hash')
+    print('\n\n\n')
+    print('hash is:', hash_id)
+    return(hash_id)
 
 
-
-def get_individual_image_urls():
-    #seed url 
-    SEED_URL = "https://api.userapi.ai/midjourney/v2/seed"
+# def get_individual_image_urls():
+#     #seed url 
+#     SEED_URL = "https://api.userapi.ai/midjourney/v2/seed"
     
-    payload = {
-        "account_hash": account_hash,
-        "is_async": False,
-        "webhook_url": webhook_url,  
-        "webhook_type": "progress",  
-    }
+#     payload = {
+#         "account_hash": account_hash,
+#         "is_async": False,
+#         "webhook_url": webhook_url,  
+#         "webhook_type": "progress",  
+#     }
 
-    try:
-        response = requests.post(SEED_URL, json=payload)
-        response.raise_for_status()  # Raises an error if the request failed
-        data = response.json()
+#     try:
+#         response = requests.post(SEED_URL, json=payload)
+#         response.raise_for_status()  # Raises an error if the request failed
+#         data = response.json()
 
-        if data.get("status") == "done" and "result" in data:
-            return [img["url"] for img in data["result"]["urls"]]
-        else:
-            print("Error: API response incomplete.")
-            return None
-    except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
-        return None
+#         if data.get("status") == "done" and "result" in data:
+#             return [img["url"] for img in data["result"]["urls"]]
+#         else:
+#             print("Error: API response incomplete.")
+#             return None
+#     except requests.exceptions.RequestException as e:
+#         print(f"Request failed: {e}")
+#         return None
 
 def download_image(image_url, save_path):
-    """
-    Downloads an image from the provided URL and saves it locally.
-    
-    :param image_url: The URL of the image to download.
-    :param save_path: The local file path to save the image.
-    """
     try:
         response = requests.get(image_url, stream=True)
         response.raise_for_status()
@@ -110,24 +114,32 @@ def download_image(image_url, save_path):
     except requests.exceptions.RequestException as e:
         print(f"Failed to download image: {e}")
 
-if __name__ == "__main__":
-    # Example usage
-    hash_id = "c9475420-688b-43e3-941b-7bd2fedaf17f"  # Replace with your actual hash
-    image_urls = get_individual_image_urls(hash_id)
+# if __name__ == "__main__":
+#     # Example usage
+#     hash_id = "c9475420-688b-43e3-941b-7bd2fedaf17f"  # Replace with your actual hash
+#     image_urls = get_individual_image_urls(hash_id)
 
-    if image_urls:
-        for i, url in enumerate(image_urls):
-            print(f"Image {i+1}: {url}")
+#     if image_urls:
+#         for i, url in enumerate(image_urls):
+#             print(f"Image {i+1}: {url}")
 
-        # Download a specific image (e.g., image 2)
-        image_number = 2  # Change this to select different images (1-4)
-        if 1 <= image_number <= len(image_urls):
-            download_image(image_urls[image_number - 1], f"midjourney_image_{image_number}.png")
-    else:
-        print("Failed to retrieve image URLs.")
+#         # Download a specific image (e.g., image 2)
+#         image_number = 2  # Change this to select different images (1-4)
+#         if 1 <= image_number <= len(image_urls):
+#             download_image(image_urls[image_number - 1], f"midjourney_image_{image_number}.png")
+#     else:
+#         print("Failed to retrieve image URLs.")
         
-        
+# drive_link = shareable_link        
 # Take user input for gender
-img_url = get_direct_drive_img(shareable_link)
-gender = get_gender_input()
-prompt = generate_prompt(gender)
+def main(drive_link):
+    img_url = get_direct_drive_img(drive_link)
+    print('img url obtained')
+    gender = get_gender_input()
+    print('gender obtained')
+    prompt = generate_prompt(gender)
+    post_request(img_url,prompt)
+# function_hash = get_hash_after_post(response)
+
+# if __name__ == "__main__":
+#     main(drive_link)
