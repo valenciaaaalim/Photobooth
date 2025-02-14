@@ -67,13 +67,17 @@ def capture_image(cam_on, cam):
         os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
         return cam_on, frame
     
+
+    
 def get_next_filename():
     # Start numbering from 1 and keep checking the filenames
     i = 1
-    while os.path.exists(os.path.join("saved_img", f"img_{i}.jpg")):
+    while os.path.exists(os.path.join("saved_img", f"{i}_Img.jpg")):
         i += 1
     img_id = i
-    return os.path.join("saved_img",f"img_{i}.jpg"), img_id  # Return the next available filename
+    return os.path.join("saved_img",f"{i}_Img.jpg"), img_id  # Return the next available filename
+
+
 
 def accept_image(frame):
     print("Press 'y' to save or 'n' to discard the image.")
@@ -83,7 +87,6 @@ def accept_image(frame):
           img_path, img_id = get_next_filename()
           print(img_path)
           cv2.imwrite(img_path, frame)
-          send_to_clipboard(frame)
           print(f"Image saved to {img_path} and clipboard")
           break
       elif user_input == 'n':  # 'n'y for no to discard
@@ -92,6 +95,9 @@ def accept_image(frame):
       else:
           print("Invalid input. Please press 'y' to save or 'n' to discard.")
     return img_path, img_id
+
+
+
     
 def main():
     cam_on, cam = False, None

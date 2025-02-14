@@ -1,23 +1,25 @@
-import http.client
 import json
+import time
+import http.client
 import pprint
+import os
 from dotenv import load_dotenv
 load_dotenv()
-import os
-import time
 import requests
 
-api_key = os.getenv('IMAGINEAPI_TOKEN')
+api_key = os.getenv('IMAGINEAPI_KEY')
 
 
-
-def get_direct_drive_img(url):
-  id = url.split('d/')[1].split('/view?')[0]
-  print(id)
-  google_drive_image_url = "https://drive.google.com/uc?export=view&id="+ str(id)
+def get_direct_drive_img(drive_img_id):
+  #id = url.split('d/')[1].split('/view?')[0]
+  print(drive_img_id)
+  google_drive_image_url = "https://drive.google.com/uc?export=view&id="+ str(drive_img_id)
   print(google_drive_image_url)
   return google_drive_image_url
  
+
+
+
 def get_gender_input():
     while True:
         gender = input("Enter the gender (m/f/group): ").lower()
@@ -37,43 +39,43 @@ def generate_prompt(gender):
 
 
 
-
 headers = {
     'Authorization': F"Bearer {api_key}",  # <<<< TODO: remember to change this
     'Content-Type': 'application/json'
 }
 
-
-def post_request(img_url,prompt, headers=headers):
-    payload = {
-        "prompt": f"{img_url} {prompt}",
-    }
+def body(img_url, prompt):
+    data = {"prompt": f"{img_url} {prompt}"}
+    return data
  
+
+
+
+
+def send_request(method, path, body=None, headers={}):
     conn = http.client.HTTPSConnection("cl.imagineapi.dev")
-    conn.request("POST", "/items/images/", body=json.dumps(payload), headers=headers)
+    conn.request(method, path, body=json.dumps(body) if body else None, headers=headers)
     response = conn.getresponse()
     data = json.loads(response.read().decode())
     conn.close()
-    pprint.pp(data)
     return data
 
+
+
+
  
-def check_image_status(data, completion):
-    response_data = post_request('GET', f"/items/images/{data['data']['id']}", headers=headers)
-    #status is False
+def check_image_status(prompt_response_data):
+    response_data = send_request('GET', f"/items/images/{prompt_response_data['data']['id']}", headers=headers)
     if response_data['data']['status'] in ['completed', 'failed']:
         print('Completed image details',)
         pprint.pp(response_data['data'])
-        print(type(response_data))
-        print(type(response_data['data']))
         chosen_url = response_data['data']['upscaled_urls'][3]
-        print('Chosen url:' , chosen_url)
-        return chosen_url, completion == True
+        pprint.pp(response_data['data']['upscaled_urls'][3])
+        return True, chosen_url
     else:
-    #status is Positive
         print(f"Image is not finished generation. Status: {response_data['data']['status']}")
-        return None, completion == False
-    
+        return False
+ 
 
 
 
@@ -92,22 +94,21 @@ def download_image(image_url, save_path):
 
 
 
- 
-def main(drive_link, img_id):
-    img_url = get_direct_drive_img(drive_link)
-    print('img url obtained')
+
+
+
+def main(drive_img_id, img_id):
+    img_url = get_direct_drive_img(drive_img_id)
+    os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
     gender = get_gender_input()
-    print('gender obtained')
-    
     prompt = generate_prompt(gender)
-    data = post_request(img_url,prompt)
-    status = False
-    while not status:
-      chosen_url, status = check_image_status(data, status)
-      time.sleep(5)
-    midjourney_image_path = os.path.join("saved_img",f"renaissance_{img_id}.jpg")
+    data = body(img_url, prompt)
+    prompt_response_data = send_request('POST', '/items/images/', data, headers)
+    pprint.pp(prompt_response_data)
+    while not check_image_status(prompt_response_data):
+        time.sleep(5)  # wait for 5 seconds
+    status, chosen_url = check_image_status(prompt_response_data)
+    print(chosen_url)
+    midjourney_image_path = os.path.join("saved_img",f"{img_id}_Renaissance.jpg")
     download_image(chosen_url, midjourney_image_path)
     return midjourney_image_path
-  
-
-

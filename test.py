@@ -1,1 +1,0 @@
-shareable_link = 'https://drive.google.com/file/d/1s-LLNbVl_WiPm7cqSNDZvsFexykeeFxL/view?usp=share_link'
