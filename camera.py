@@ -28,26 +28,6 @@ def stop_camera(cam_on, cam):
     return cam_on, None
 
 
-# def send_to_clipboard(img):
-#     # Convert OpenCV image (BGR) to PIL image (RGB)
-#     image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-
-#     # Save image to a bytes buffer as PNG
-#     output = io.BytesIO()
-#     image.save(output, format="PNG")
-#     image_data = output.getvalue()
-
-#     # Convert image data to NSData (macOS format)
-#     ns_data = NSData.dataWithBytes_length_(image_data, len(image_data))
-
-#     # Access the macOS clipboard
-#     pasteboard = NSPasteboard.generalPasteboard()
-#     pasteboard.clearContents()  # Clear existing clipboard content
-
-#     # Write the image data to clipboard in PNG format
-#     pasteboard.setData_forType_(ns_data, NSPasteboardTypePNG)
-
-
 
 def capture_image(cam_on, cam):
     # cam_on, cam = start_camera(cam_on, cam)
