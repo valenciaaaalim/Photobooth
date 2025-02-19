@@ -32,7 +32,7 @@ def generate_prompt(gender):
     if gender.lower() == 'm':
         return "this is a hyperrealistic renaissance oil painting of the same rich and handsome man in the renaissance era, against a black studio wall. He has the same face and is dressed in medieval European renaissance style royal attire, bright intense eyes, half body portrait, same skin tone, dignified posture, rich details. The painting has a warm lighting with high contrast, dark background and warm glow on the person as the focus of the painting. --ar 21:34"
     elif gender.lower() == 'f':
-        return "this is a hyperrealistic renaissance oil painting of the same rich and beautiful woman in the renaissance era, against a black studio wall. She has the same face and is dressed in medieval European renaissance style royal attire, bright intense eyes, delicate skin, half body portrait, same skin tone, elegant posture, rich details. The painting has a warm lighting with high contrast, dark background and warm glow on the person as the focus of the painting. --ar 21:34"
+        return "this is a hyperrealistic renaissance oil painting of the same rich and beautiful woman in the renaissance era, against a black studio wall. She has the same face and is dressed in medieval European renaissance style modest royal attire, bright intense eyes, delicate skin, half body portrait, same skin tone, elegant posture, rich details. Modest attire. The painting has a warm lighting with high contrast, dark background and warm glow on the person as the focus of the painting. --ar 21:34"
     elif gender.lower()== 'group':
         return "this is a hyperrealistic renaissance oil painting of the same rich and good-looking people in the renaissance era, against a black studio wall. They are dressed in medieval European renaissance style royal attire, bright intense eyes, delicate skin, half body portrait, same skin tone, elegant posture, rich details. The painting has a warm lighting with high contrast, dark background and warm glow on the people as the focus of the painting. --ar 21:34"
 
@@ -69,8 +69,8 @@ def check_image_status(prompt_response_data):
     if response_data['data']['status'] in ['completed', 'failed']:
         print('Completed image details',)
         pprint.pp(response_data['data'])
-        chosen_url = response_data['data']['upscaled_urls'][3]
-        pprint.pp(response_data['data']['upscaled_urls'][3])
+        chosen_url = response_data['data']['upscaled_urls'][0]
+        pprint.pp(response_data['data']['upscaled_urls'][0])
         return True, chosen_url
     else:
         print(f"Image is not finished generation. Status: {response_data['data']['status']}")
@@ -109,6 +109,6 @@ def main(drive_img_id, img_id):
         time.sleep(5)  # wait for 5 seconds
     status, chosen_url = check_image_status(prompt_response_data)
     print(chosen_url)
-    midjourney_image_path = os.path.join("saved_img",f"{img_id}_Renaissance.jpg")
+    midjourney_image_path = os.path.join("saved_img",f"{img_id}_notWatermarked.jpg")
     download_image(chosen_url, midjourney_image_path)
     return midjourney_image_path
