@@ -12,7 +12,7 @@ def start_camera(cam_on, cam):
     elif not cam.isOpened():
         cam_on = False
         print("Error: Unable to access the camera.")
-        return False, None, frame_width, frame_height
+        return False, None
     
 
 def stop_camera(cam_on, cam):
