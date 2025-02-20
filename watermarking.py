@@ -17,8 +17,8 @@ def main(image,img_id):
 
     # Resize watermark to make it smaller
     sutd_width, sutd_height = sutd.size
-    downsized_sutd_width = sutd_width //5   # Resize to 25% of the original width
-    downsized_sutd_height = sutd_height //5   # Resize to 25% of the original height
+    downsized_sutd_width = sutd_width //4   # Resize to 25% of the original width
+    downsized_sutd_height = sutd_height //4   # Resize to 25% of the original height
     sutd = sutd.resize((downsized_sutd_width, downsized_sutd_height), Image.Resampling.LANCZOS)
 
 

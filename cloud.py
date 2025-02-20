@@ -4,10 +4,7 @@ import os
 import qrcode
 import cv2
 from pydrive2.auth import GoogleAuth
-from pydrive2.drive import GoogleDrive
-from PIL import Image
-from io import BytesIO
-import numpy as np
+from pydrive2.drive import GoogleDriveh
 
 # Authenticate Google Drive
 def authenticate_google_drive():
