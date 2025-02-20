@@ -72,8 +72,7 @@ def main():
             cv2.destroyWindow("Camera")
             cv2.waitKey(1)
             print("Closed preview")
-            # os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
-            os.system('powershell -command "(Get-Process Code).MainWindowHandle | ForEach-Object { [void] [System.Windows.Forms.Form]::FromHandle($_).Activate() }"')
+            os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
             img_path, img_id = accept_image(captured)
             return(img_path, img_id)
         elif key == ord('q'):
