@@ -2,7 +2,7 @@ import cv2
 import os
 
 def start_camera(cam_on, cam):
-    cam = cv2.VideoCapture(1)
+    cam = cv2.VideoCapture(0)
     frame_width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
     if cam.isOpened():
