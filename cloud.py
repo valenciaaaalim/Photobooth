@@ -2,9 +2,8 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 import qrcode
-import cv2
 from pydrive2.auth import GoogleAuth
-from pydrive2.drive import GoogleDriveh
+from pydrive2.drive import GoogleDrive
 
 # Authenticate Google Drive
 def authenticate_google_drive():
