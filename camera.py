@@ -1,9 +1,5 @@
 import cv2
 import os
-from PIL import Image
-import io
-from AppKit import NSPasteboard, NSPasteboardTypePNG
-from Foundation import NSData
 
 def start_camera(cam_on, cam):
     cam = cv2.VideoCapture(0)
@@ -27,27 +23,6 @@ def stop_camera(cam_on, cam):
     print("Camera is now OFF")
     return cam_on, None
 
-
-
-def capture_image(cam_on, cam):
-    # cam_on, cam = start_camera(cam_on, cam)
-    ret, frame = cam.read()
-    image = cv2.flip(frame,1)
-    if not ret:
-        print("Error: Unable to capture image.")
-        return
-    elif ret:
-        cv2.imshow("Preview", image)
-        print("Press any key to close preview")
-        cv2.waitKey(0)
-        cv2.destroyWindow("Preview")
-        cv2.waitKey(1)
-        print("destroyWindow")
-        cam_on = False
-        # waiting for any keypress, then will close window
-        os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
-        return cam_on, image
-    
 
     
 def get_next_filename():
@@ -88,13 +63,26 @@ def main():
         ret, frame = cam.read()
         live = cv2.flip(frame,  1)
         cv2.imshow('Camera', live)
-        if cv2.waitKey(1) == ord('c'):
-            cam_on, frame = capture_image(cam_on, cam)
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('c'):
+            # cam_on, frame = capture_image(cam_on, cam)
             captured = cv2.flip(frame, 1)
+            print("Press any key to close preview")
+            cv2.waitKey(0)
+            cv2.destroyWindow("Camera")
+            cv2.waitKey(1)
+            print("Closed preview")
+            os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
             img_path, img_id = accept_image(captured)
             return(img_path, img_id)
-        elif cv2.waitKey(1) == ord('q'):
+        elif key == ord('q'):
             print('Quitting program')
+            print("Press any key to close preview")
+            cv2.waitKey(0)
+            cv2.destroyWindow("Camera")
+            cv2.waitKey(1)
+            print("Closed preview")
+            os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
             break
     stop_camera(cam_on, cam)
     return(None,None)

@@ -12,9 +12,9 @@ api_key = os.getenv('IMAGINEAPI_KEY')
 
 def get_direct_drive_img(drive_img_id):
   #id = url.split('d/')[1].split('/view?')[0]
-  print(drive_img_id)
+  #print(drive_img_id)
   google_drive_image_url = "https://drive.google.com/uc?export=view&id="+ str(drive_img_id)
-  print(google_drive_image_url)
+  #print(google_drive_image_url)
   return google_drive_image_url
  
 
@@ -68,9 +68,9 @@ def check_image_status(prompt_response_data):
     response_data = send_request('GET', f"/items/images/{prompt_response_data['data']['id']}", headers=headers)
     if response_data['data']['status'] in ['completed', 'failed']:
         print('Completed image details',)
-        pprint.pp(response_data['data'])
+        #pprint.pp(response_data['data'])
         chosen_url = response_data['data']['upscaled_urls'][0]
-        pprint.pp(response_data['data']['upscaled_urls'][0])
+        #pprint.pp(response_data['data']['upscaled_urls'][0])
         return True, chosen_url
     else:
         print(f"Image is not finished generation. Status: {response_data['data']['status']}")
@@ -108,7 +108,7 @@ def main(drive_img_id, img_id):
     while not check_image_status(prompt_response_data):
         time.sleep(5)  # wait for 5 seconds
     status, chosen_url = check_image_status(prompt_response_data)
-    print(chosen_url)
+    #print(chosen_url)
     midjourney_image_path = os.path.join("saved_img",f"{img_id}_notWatermarked.jpg")
     download_image(chosen_url, midjourney_image_path)
     return midjourney_image_path

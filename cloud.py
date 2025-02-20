@@ -3,7 +3,6 @@ load_dotenv()
 import os
 import qrcode
 import cv2
-import requests
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 from PIL import Image
@@ -52,31 +51,17 @@ def get_shareable_link(drive, folder_id):
 
 # Generate and display QR Code
 def generate_qr_code(link, img_id):
-    print('Generating QR')
+    print('Generating QR...')
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(link)
     qr.make(fit=True)
     img = qr.make_image(fill='black', back_color='white')
     output_path= f"saved_img/{img_id}_QR.png"
     img.save(output_path)
-    print('QR code saved successfully.')
-    # qr_img = Image.open(output_path)
-    
+    print('QR code saved locally')
+    return output_path     
     
 
-    # Load image numpy with OpenCV
-    qr_cv = cv2.imread(output_path)
-    cv2.imshow('QR', qr_cv)
-    if qr_cv is not None:
-        print('Displaying QR code...press any key to close image and continue to generation')        
-        # Wait indefinitely until a key is pressed
-        key = cv2.waitKey(0)
-        print(f"Key pressed: {key}")  # Debugging
-        # Close all OpenCV windows
-        cv2.destroyAllWindows()
-        cv2.waitKey(1) #to properly wait until destroyAllWindows is effective
-    else:
-        print("Error: Failed to load QR code image.")
 
 # Main function
 def upload_original(img_path, img_id):
@@ -96,11 +81,11 @@ def upload_original(img_path, img_id):
 
     # Get shareable link & generate QR code
     drive_link = get_shareable_link(drive, folder_id)
-    generate_qr_code(drive_link, img_id)
+    qr_path = generate_qr_code(drive_link, img_id)
 
-    print(f"Folder {folder_name} created. QR Code generated! Shareable link: {drive_link}")
+    print(f"Folder {folder_name} created on Drive. Shareable link: {drive_link}")
 
-    return drive_link, folder_id, drive_img_id
+    return drive_link, folder_id, drive_img_id, qr_path
 
 
 def upload_renaissance(img_path, folder_id):
