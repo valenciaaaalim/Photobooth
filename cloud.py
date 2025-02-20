@@ -4,6 +4,7 @@ import os
 import qrcode
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
+import cv2
 
 # Authenticate Google Drive
 def authenticate_google_drive():
@@ -52,10 +53,32 @@ def generate_qr_code(link, img_id):
     qr.add_data(link)
     qr.make(fit=True)
     img = qr.make_image(fill='black', back_color='white')
+    
+    image = cv2.imread(img)
+
+    # font
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    # Blue color in BGR
+    color = (0, 0, 0)
+    # Line thickness of 2 px
+    thickness = 1
+
+    image = cv2.copyMakeBorder(image, 20, 40, 0, 0, cv2.BORDER_WRAP)
+    # Using cv2.putText() method
+    image = cv2.putText(image, 'Save a picture of this to see your transformation!', (40,40), font, 
+                      0.5, color, thickness, cv2.LINE_AA)
+
+    image = cv2.putText(image, 'Disclaimer: This is a fun activity to transform us into the' , (45,470), font, 
+                      0.4, color, thickness, cv2.LINE_AA)
+    image = cv2.putText(image, 'Medieval Western European era.' , (45,490), font, 
+                      0.4, color, thickness, cv2.LINE_AA) 
+    image = cv2.putText(image, 'You will look like a Westerner from that period.' , (45,510), font, 
+                      0.4, color, thickness, cv2.LINE_AA) 
+
     output_path= f"saved_img/{img_id}_QR.png"
-    img.save(output_path)
+    image.save(output_path)
     print('QR code saved locally')
-    return output_path     
+    return output_path
     
 
 

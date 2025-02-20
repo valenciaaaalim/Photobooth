@@ -2,7 +2,7 @@ import cv2
 import os
 
 def start_camera(cam_on, cam):
-    cam = cv2.VideoCapture(0)
+    cam = cv2.VideoCapture(1)
     frame_width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
     if cam.isOpened():
@@ -57,7 +57,7 @@ def accept_image(frame):
     
 def main():
     cam_on, cam = False, None
-    cam_on, cam= start_camera(cam_on, cam)
+    cam_on, cam = start_camera(cam_on, cam)
     print ("Press 'c' to snap a shot or 'q' to quit program")
     while True:
         ret, frame = cam.read()
@@ -72,7 +72,8 @@ def main():
             cv2.destroyWindow("Camera")
             cv2.waitKey(1)
             print("Closed preview")
-            os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
+            # os.system("""osascript -e 'tell application "Visual Studio Code" to activate'""")
+            os.system('powershell -command "(Get-Process Code).MainWindowHandle | ForEach-Object { [void] [System.Windows.Forms.Form]::FromHandle($_).Activate() }"')
             img_path, img_id = accept_image(captured)
             return(img_path, img_id)
         elif key == ord('q'):
