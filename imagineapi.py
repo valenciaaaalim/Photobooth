@@ -34,7 +34,7 @@ def generate_prompt(gender):
     elif gender.lower() == 'f':
         return "this is a hyperrealistic renaissance oil painting of the same rich and beautiful woman in the renaissance era, against a black studio wall. She has the same face and is dressed in medieval European renaissance style modest royal attire, bright intense eyes, delicate skin, half body portrait, same skin tone, elegant posture, rich details. Modest attire. The painting has a warm lighting with high contrast, dark background and warm glow on the person as the focus of the painting. --ar 21:34"
     elif gender.lower()== 'group':
-        return "this is a hyperrealistic renaissance oil painting of the same rich and good-looking people in the renaissance era, against a black studio wall. They are dressed in medieval European renaissance style royal attire, bright intense eyes, delicate skin, half body portrait, same skin tone, elegant posture, rich details. The painting has a warm lighting with high contrast, dark background and warm glow on the people as the focus of the painting. --ar 21:34"
+        return "this is a hyperrealistic renaissance oil painting of the same rich and good-looking woman and man in the renaissance era, against a black studio wall. They are dressed in medieval European renaissance style royal attire, bright intense eyes, delicate skin, half body portrait, same skin tone, elegant posture, rich details. The painting has a warm lighting with high contrast, dark background and warm glow on the people as the focus of the painting. --ar 21:34"
 
 
 
